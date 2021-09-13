@@ -55,8 +55,8 @@ func GetUserByIdController(c echo.Context) error {
 	}
 
 	if loggedUserId != id {
-		return c.JSON(http.StatusUnauthorized, map[string]interface{}{
-			"message": "unauthorized access !",
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": "user id invalid",
 			"data":    "",
 		})
 	}
@@ -64,7 +64,10 @@ func GetUserByIdController(c echo.Context) error {
 	users, err := database.GetUserById((id))
 
 	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+			"message": "unauthorized access !",
+			"data":    "",
+		})
 	}
 
 	return c.JSON(http.StatusOK, map[string]interface{}{
@@ -90,6 +93,8 @@ func CreateUserController(c echo.Context) error {
 	})
 }
 
+// DELETE FUNCTION
+
 func DeleteUserController(c echo.Context) error {
 	id, _ := strconv.Atoi(c.Param("id"))
 
@@ -100,7 +105,7 @@ func DeleteUserController(c echo.Context) error {
 		})
 	}
 	return c.JSON(http.StatusOK, map[string]string{
-		"message": "successfully delete data user " + c.Param("id"),
+		"message": "delete user succeed",
 	})
 }
 
@@ -118,6 +123,10 @@ func UpdateUserController(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"message": "successfully updated",
-		"user":    user,
+		"data":    user,
 	})
+}
+
+func GetUserDetailControllersTesting() echo.HandlerFunc {
+	return GetUserByIdController
 }
